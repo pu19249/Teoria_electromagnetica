@@ -100,6 +100,7 @@
 
 clear; close all; clc;
 % POTENCIAL APROXIMADO DE LA DENSIDAD DE CARGA
+figure
 r = [-2*pi:pi/10:2*pi];
 theta = [-2*pi:pi/10:2*pi];
 [Mx, My] = meshgrid(r, theta);
@@ -109,3 +110,67 @@ xlabel('EJE X')
 ylabel('EJE Y')
 zlabel('EJE Z')
 title('POTENCIAL (EXPANSION MULTIPOLAR)')
+
+figure
+r1 = [-2*pi:pi/10:2*pi];
+theta1 = [-2*pi:pi/10:2*pi];
+[Mx1, My1] = meshgrid(r1, theta1);
+Mz = 89991804694*(sin(My1)./(r1.^2));
+mesh(Mx, My, Mz)
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('POTENCIAL ORIENTADO EN X')
+
+#Potencial de dipolo orientado en x
+figure
+hold on
+theta2 = pi;
+phi2 = 2.*pi;
+r2 = 1:1:10;
+#Asumiendo que Po = 0.001
+pot_x = 8991804.694*((sin(theta2))*cos(phi2))./(r2.^2);
+plot(r2, pot_x, '-.og')
+xlabel('r')
+ylabel('V(r)')
+
+title('POTENCIAL ORIENTADO EN X')
+
+#Potencial de dipolo orientado en y
+figure
+theta3 = pi;
+phi3 = 2.*pi;
+r3 = 1:1:10;
+#Asumiendo que Po = 0.001
+pot_y = 8991804.694*((sin(theta3))*sin(phi3))./(r3.^2);
+plot(r3, pot_y, '-.ob')
+xlabel('r')
+ylabel('V(r)')
+
+title('POTENCIAL ORIENTADO EN Y')
+
+#Potencial de dipolo orientado en z
+figure
+theta4 = pi;
+phi4 = 2.*pi;
+r4 = 1:1:10;
+#Asumiendo que Po = 0.001
+pot_z = 8991804.694*((cos(theta4))./(r4.^2));
+plot(r4, pot_z, '-.om')
+xlabel('r')
+ylabel('V(r)')
+
+title('POTENCIAL ORIENTADO EN Z')
+
+
+##figure
+##theta4 = pi;
+##r4 = [-2*pi:pi/10:2*pi];
+##phi4 = [-2*pi:pi/10:2*pi];
+##[Mx1, My1] = meshgrid(r1, theta1);
+##Mz = 89991804694*sin(theta4)*(cos(My1)./(r1.^2));
+##mesh(Mx, My, Mz)
+##xlabel('EJE X')
+##ylabel('EJE Y')
+##zlabel('EJE Z')
+##title('POTENCIAL ORIENTADO EN X')
