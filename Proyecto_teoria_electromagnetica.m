@@ -162,6 +162,24 @@ ylabel('V(r)')
 
 title('POTENCIAL ORIENTADO EN Z')
 
+#Potencial de un cuadripolo paralelo al eje z
+figure
+a = 5;
+q = 1e-9;
+d = 6;
+R = 0:1:15;
+alpha1 = asin(((d/2)^2-R.^2-(a^2)/4)./(a*R.^2));
+alpha2 = asin((R+R.^2+(a^2)/4)./a.*R);
+
+
+
+pot_qua = (q*d/(1.11e-10))*(((cos(alpha1))./(R.^2+(a^2)/4+a*sin(alpha1).*R))-((cos(alpha2))./(R.^2+(a^2)/4-a*sin(alpha2).*R)));
+plot(R, pot_qua, '-.ob')
+xlabel('R')
+ylabel('V(R)')
+
+title('POTENCIAL DOS DIPOLOS PARALELOS')
+
 
 ##figure
 ##theta4 = pi;
