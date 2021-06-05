@@ -164,7 +164,7 @@ b_esf = 10;
 e0 = 8.85e-12;
 er = 2.24; #dielectrico
 xe = 1.24; #er=xe-1
-radio_esf = linspace(a, b, 11);
+radio_esf = linspace(a_esf, b_esf, 11);
 theta_esf = linspace(0, 2*pi, 11);
 [Mesf1, Mesft1] = meshgrid(radio_esf, theta5);
 xesf1 = Mesf1.*cos(Mesft1); #parametrizo mis valores
@@ -193,14 +193,14 @@ zlabel('EJE Z')
 title('DENSIDAD DE CARGA SUPERFICIAL ESFERA a<r<b')
 
 #a<r<b
-radio_esf2 = linspace(b, 2*b, 11);
+radio_esf2 = linspace(b_esf, 2*b_esf, 11);
 theta_esf2 = linspace(0, 2*pi, 11);
 [Mesf2, Mesft2] = meshgrid(radio_esf2, theta_esf2);
 xesf2 = Mesf2.*cos(Mesft2); #parametrizo mis valores
 yesf2 = Mesf2.*sin(Mesft2);
-densidad_esf2 = ((xesf2.^2)*k); #superficial en b
+densidad_esf2 = ((xesf2.^2)*k_esf); #superficial en b
 densidad_esf2_1 = -4*(((xesf2.^2)*k)); #superficial en 2b
-densidad_esf2_2 = 4*k*xesf2.^2; #volumetrica
+densidad_esf2_2 = 4*k_esf*xesf2.^2; #volumetrica
 figure
 surf(xesf1, yesf1, densidad_esf2_2, Mesf1)
 colorbar
@@ -218,3 +218,62 @@ xlabel('EJE X')
 ylabel('EJE Y')
 zlabel('EJE Z')
 title('DENSIDAD DE CARGA SUPERFICIAL ESFERA b<r<2b')
+
+#Grafica de Desplazamiento vs distancia
+distancia1 = 0:1:a_esf;
+D1 = 0./4*pi*distancia1.^2;
+distancia2 = a_esf:1:2*b_esf;
+D2 = Q./4*pi*distancia2.^2;
+figure
+hold on
+plot(distancia1, D1, '-.or')
+plot(distancia2, D2, '-.ob')
+hold off
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('DESPLAZAMIENTO ELECTRICO VS DISTANCIA')
+
+#Grafica de Campo electrico vs distancia
+distancia3 = linspace(0, a_esf, 5);
+distancia4 = linspace(a_esf, b_esf, 5);
+distancia5 = linspace(b_esf, 2*b_esf, 5);
+distancia6 = linspace(2*b_esf, 30, 5);  #Al infinito pero se acorta para la grafica y ver su comporatmiento
+
+E_1 = 0./4*pi*er*e0*distancia3.^2; #r<a
+E_2 = Q./4*pi*er*e0*distancia4.^2; #a<r<b
+E_3 = (Q./4*pi*er*e0*distancia5.^2)+(k_esf/e0)*distancia5.^2; #b<r<2b
+E_4 = Q./4*pi*e0*distancia6.^2; #r>2b
+
+figure
+
+plot(distancia3, E_1, '-.or')
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('CAMPO ELECTRICO VS DISTANCIA r<a')
+
+figure
+plot(distancia4, E_2, '-.ob')
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('CAMPO ELECTRICO VS DISTANCIA a<r<b')
+
+figure
+plot(distancia5, E_3, '-.og')
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('CAMPO ELECTRICO VS DISTANCIA b<r<2b')
+
+figure
+plot(distancia6, E_4, '-.om')
+
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('CAMPO ELECTRICO VS DISTANCIA r>2b')
+
+
+
