@@ -4,123 +4,23 @@
 # Descripcion: proyecto de representacion grafica de campo electrico y potencial
 # de dipolos y medios polarizados
 
-##% DIPOLOS ELECTRICOS Y EXPANSION MULTIPOLAR
-##% Primer inciso
-##clear; close all; clc;
-##N = 20;
-##minTheta = -2*pi; maxTheta = 2*pi;
-##minPhi = -2*pi; maxPhi = 2*pi;
-##minR = 2; maxR = 2;
-##
-###Vectores para dar un rango a cada variable
-##Theta = [-2*pi -pi 0 pi 2*pi];
-##R = [-2 -1 0 1 2];
-##Phi = [-2*pi -pi 0 pi 2*pi];
-##
-###Definicion de ejes
-### Theta_axis = linspace(minTheta, maxTheta, N);
-### Phi_axis = linspace(minPhi, maxPhi, N);
-### R_axis = linspace(minR, maxR, N);
-##
-##R_axis = R.*sin(Theta).*cos(Phi);
-##Phi_axis = R.*sin(Theta).*sin(Phi);
-##Theta_axis = R.*cos(Theta);
-##
-##[RG, PhiG, ThetaG] = meshgrid(1:4,1:4,1:4);
-##
-##
-##
-###Componentes del campo electrico
-##eps0 = 8.85E-12;
-##po = 100; #Un valor del momento dipolar para simular las graficas
-##k = po/(4*pi*eps0);
-##Er = k.*(-2.*sin(ThetaG).*cos(PhiG)-2.*sin(ThetaG).*sin(PhiG)-2.*cos(ThetaG))./(RG.^5);
-##Ephi = k.*(sin(PhiG)-cos(PhiG))/(RG.^3); 
-##Etheta = k.*(-cos(ThetaG).*cos(PhiG)-cos(ThetaG).*sin(PhiG)+sin(ThetaG))./(RG.^5);
-##
-##E = sqrt(Er.^2 + Ephi.^2 + Etheta.^2);
-##
-##u = Er./E;
-##v = Ephi./E;
-##w = Etheta./E;
-##
-##figure();
-##h = quiver3(RG, PhiG, ThetaG, u, v, w);
-##
-###Potencial
-##
-##[pot1, pot2, pot3] = meshgrid(1:4,1:4,1:4);
-##Pot = po.*((sin(pot3)).*cos(pot2) + sin(pot3).*sin(pot2) + cos(pot3))./(4*pi.*pot1.^2);
-##figure();
-##i = quiver3(pot1, pot2, pot3, 1:64, 1:64, 1:64);
-##
-##
-##
-##%POLARIZACION
-###Problema 1
-###Densidades de carga de polarizacion
-##
-###Definicion de variables
-##
-##k = 5;
-##alpha0 = 10;
-##
-###Graficar polarizacion
-##x=linspace(-1,1,10);
-##y=linspace(-2*pi, 2*pi, 10);
-##[ss, pp] = meshgrid(x, y);
-##u = k.*ss.*e.^((ss.^2)/alpha0).*cos(pp);
-##v = k.*ss.*e.^((ss.^2)/alpha0).*sin(pp);
-##quiver(ss, pp, u, v)
-##axis equal
-##j = figure();
-##
-##xlabel('Eje x')
-##ylabel('Eje y')
-####s = linspace(1,10,1);
-####Pphi = 0:2*pi;
-####[ss, pp] = meshgrid(s, Pphi);
-######xx = ss.*cos(tt);
-######yy = ss.*sin(tt);
-####componente_i = k.*e.^((-ss.^2)/alpha0).*cos(pp);
-####componente_j = k.*e.^((-ss.^2)/alpha0).*sin(pp);
-####
-####normalizar = sqrt(componente_i.^2 + componente_j.^2);
-####comp_i = componente_i./normalizar;
-####comp_j = componente_j./normalizar;
-####quiver(ss, pp, comp_i, comp_j)
-####axis equal
-##
-####Pol = k.*e.^((s.^2)/alpha0);
-####ThePol = 2*pi;
-####mesh(Pol, ThePol, 0*Pol)
-####figure();
-###volumetrica = (-k.*(e.^(-x.^2)/alpha0))*((1./x-(2.*x/alpha0)));
-
+% ------------------ DIPOLOS ELECTRICOS Y EXPANSION MULTIPOLAR -----------------
+% Primer inciso
 
 clear; close all; clc;
-% POTENCIAL APROXIMADO DE LA DENSIDAD DE CARGA
+#Potencial de un dipolo orientado en los tres ejes
 figure
-r = [-2*pi:pi/10:2*pi];
-theta = [-2*pi:pi/10:2*pi];
-[Mx, My] = meshgrid(r, theta);
-Mz = 89991804694*(0.25-((Mx.^2+My.^2)/120).*((3*(cos(atan(My./Mx)).^2)-1)/2));
-mesh(Mx, My, Mz)
-xlabel('EJE X')
-ylabel('EJE Y')
-zlabel('EJE Z')
-title('POTENCIAL (EXPANSION MULTIPOLAR)')
+hold on
+theta_0 = pi;
+phi_0 = 2.*pi;
+r_0= 1:1:10;
+#Asumiendo que Po = 0.001
+pot_0 = 8991804.694*((sin(theta_0)*cos(phi_0))+(sin(theta_0)*sin(phi_0)+cos(theta_0)./(r_0.^2)));
+plot(r_0, pot_0, '-.og')
+xlabel('r')
+ylabel('V(r)')
 
-figure
-r1 = [-2*pi:pi/10:2*pi];
-theta1 = [-2*pi:pi/10:2*pi];
-[Mx1, My1] = meshgrid(r1, theta1);
-Mz = 89991804694*(sin(My1)./(r1.^2));
-mesh(Mx, My, Mz)
-xlabel('EJE X')
-ylabel('EJE Y')
-zlabel('EJE Z')
-title('POTENCIAL ORIENTADO EN X')
+title('POTENCIAL ORIENTADO EN LOS TRES EJES')
 
 #Potencial de dipolo orientado en x
 figure
@@ -164,12 +64,12 @@ title('POTENCIAL ORIENTADO EN Z')
 
 #Potencial de un cuadripolo paralelo al eje z
 figure
-a = 5;
-q = 1e-9;
-d = 6;
-R = 0:1:15;
-alpha1 = asin(((d/2)^2-R.^2-(a^2)/4)./(a*R.^2));
-alpha2 = asin((R+R.^2+(a^2)/4)./a.*R);
+a = 5;        #La separacion entre sus centros
+q = 1e-9;     #Se asume una carga de 1nC
+d = 6;        #La separcion entre las cargas
+R = 0:1:15;   #Si se mide desde el centro hasta una distancia R de 15
+alpha1 = asin(((d/2)^2-R.^2-(a^2)/4)./(a*R.^2)); #Varian junto con el radio de
+alpha2 = asin((R+R.^2+(a^2)/4)./a.*R);           #donde se miden
 
 
 
@@ -180,15 +80,141 @@ ylabel('V(R)')
 
 title('POTENCIAL DOS DIPOLOS PARALELOS')
 
+% POTENCIAL APROXIMADO DE LA DENSIDAD DE CARGA
+figure
+r = [-2*pi:pi/10:2*pi];
+theta = [-2*pi:pi/10:2*pi];
+[Mx, My] = meshgrid(r, theta);
+Mz = 89991804694*(0.25-((Mx.^2+My.^2)/120).*((3*(cos(atan(My./Mx)).^2)-1)/2));
+mesh(Mx, My, Mz)
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('POTENCIAL (EXPANSION MULTIPOLAR)')
 
-##figure
-##theta4 = pi;
-##r4 = [-2*pi:pi/10:2*pi];
-##phi4 = [-2*pi:pi/10:2*pi];
-##[Mx1, My1] = meshgrid(r1, theta1);
-##Mz = 89991804694*sin(theta4)*(cos(My1)./(r1.^2));
-##mesh(Mx, My, Mz)
-##xlabel('EJE X')
-##ylabel('EJE Y')
-##zlabel('EJE Z')
-##title('POTENCIAL ORIENTADO EN X')
+figure
+r1 = [-2*pi:pi/10:2*pi];
+theta1 = [-2*pi:pi/10:2*pi];
+[Mx1, My1] = meshgrid(r1, theta1);
+Mz = 89991804694*(sin(My1)./(r1.^2));
+mesh(Mx, My, Mz)
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('POTENCIAL ORIENTADO EN X')
+
+
+% ------------------------------ POLARIZACION ----------------------------------
+
+#Densidades de carga
+figure
+a = 5;  #radio interno a
+b = 10; #radio externo b
+k = 2;
+alpha0 = 0.01;
+d_radio = linspace(a, b, 11);
+theta5 = linspace(0, 2*pi, 11);
+[Mr, Mt] = meshgrid(d_radio, theta5);
+xr = Mr.*cos(Mt); #parametrizo mis valores
+yr = Mr.*sin(Mt);
+densidad = k*exp(-xr.^(2/alpha0))*(1./xr-2*xr/alpha0);
+surf(xr, yr, densidad, Mr)
+colorbar
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('DENSIDAD DE CARGA VOLUMETRICA')
+densidad_a = -k*exp(-xr.^(2/alpha0));
+densidad_b = k*exp(-xr.^(2/alpha0));
+figure
+hold on
+surf(xr, yr, densidad_a, Mr)
+surf(xr, yr, densidad_b, Mr)
+colorbar
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('DENSIDAD DE CARGA SUPERFICIAL')
+hold off
+
+#Campo electrico
+figure
+for x = 0:b #Desde el centro hasta mi radio externo
+  x = linspace(-10, b, 11);
+  y = x';   #La derivada de x
+  u = -2.259*10^10.*exp(-(x.^2+y.^2)/0.01);
+  [ex, ey] = gradient(u);
+  
+endfor
+hold on
+quiver(x, y, ex, ey)
+contour(x, y, u)
+hold off
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('CAMPO ELECTRICO')
+
+#Densidades de las esferas
+#a<r<b
+k_esf = 2;
+Q = 1e-9;
+a_esf = 5;
+b_esf = 10;
+e0 = 8.85e-12;
+er = 2.24; #dielectrico
+xe = 1.24; #er=xe-1
+radio_esf = linspace(a, b, 11);
+theta_esf = linspace(0, 2*pi, 11);
+[Mesf1, Mesft1] = meshgrid(radio_esf, theta5);
+xesf1 = Mesf1.*cos(Mesft1); #parametrizo mis valores
+yesf1 = Mesf1.*sin(Mesft1);
+densidad_esf1 = -((e0*xe)+Q)./(4*pi*er*e0*xesf1.^2); #superficial en a
+densidad_esf1_1 = ((e0*xe)+Q)./(4*pi*er*e0*xesf1.^2); #superficial en b
+figure
+hold on
+surf(xesf1, yesf1, densidad_esf1, Mesf1)
+surf(xesf1, yesf1, densidad_esf1_1, Mesf1)
+hold off
+colorbar
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('DENSIDAD DE CARGA VOLUMETRICA ESFERA a<r<b')
+figure
+hold on
+plot(xesf1, densidad_esf1)
+plot(xesf1, densidad_esf1_1)
+hold off
+colorbar
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('DENSIDAD DE CARGA SUPERFICIAL ESFERA a<r<b')
+
+#a<r<b
+radio_esf2 = linspace(b, 2*b, 11);
+theta_esf2 = linspace(0, 2*pi, 11);
+[Mesf2, Mesft2] = meshgrid(radio_esf2, theta_esf2);
+xesf2 = Mesf2.*cos(Mesft2); #parametrizo mis valores
+yesf2 = Mesf2.*sin(Mesft2);
+densidad_esf2 = ((xesf2.^2)*k); #superficial en b
+densidad_esf2_1 = -4*(((xesf2.^2)*k)); #superficial en 2b
+densidad_esf2_2 = 4*k*xesf2.^2; #volumetrica
+figure
+surf(xesf1, yesf1, densidad_esf2_2, Mesf1)
+colorbar
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('DENSIDAD DE CARGA VOLUMETRICA ESFERA b<r<2b')
+figure
+hold on
+plot(xesf1, densidad_esf2)
+plot(xesf1, densidad_esf2_1)
+hold off
+colorbar
+xlabel('EJE X')
+ylabel('EJE Y')
+zlabel('EJE Z')
+title('DENSIDAD DE CARGA SUPERFICIAL ESFERA b<r<2b')
